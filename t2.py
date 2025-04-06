@@ -38,7 +38,7 @@ def parse_packet(payload):
     if len(payload) == 0:
         return "Empty packet"
     
-    packet_id = payload[0]
+    packet_id = payload[:4]
     return f"Packet ID: 0x{packet_id:02X} ({packet_id}) | Length: {len(payload)}"
 
 def handle_packet(packet):
@@ -52,7 +52,7 @@ def handle_packet(packet):
             with open(LOG_FILE, "a") as f:
                 f.write(f"{timestamp} - {hex_data}\n")
             print(f"{timestamp} - {hex_data}")
-            print(f"Packet type: {payload[0]} (int), 0x{payload[0]:02X} (hex)")
+            print(f"Packet type: {payload[:4]} (int), 0x{payload[:4]:02X} (hex)")
             print(parse_packet(payload))
             print()
 
