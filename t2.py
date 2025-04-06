@@ -34,14 +34,12 @@ packet_parsers = {
     # Add more here...
 }
 
-def parse_packet(data: bytes):
-    if not data:
-        return None
-    packet_id = data[0]
-    parser = packet_parsers.get(packet_id)
-    if not parser:
-        return {"packet_id": packet_id, "raw": data[1:]}
-    return parser(data[1:])
+def parse_packet(payload):
+    if len(payload) == 0:
+        return "Empty packet"
+    
+    packet_id = payload[0]
+    return f"Packet ID: 0x{packet_id:02X} ({packet_id}) | Length: {len(payload)}"
 
 def handle_packet(packet):
     if IP in packet and UDP in packet:
@@ -54,7 +52,9 @@ def handle_packet(packet):
             with open(LOG_FILE, "a") as f:
                 f.write(f"{timestamp} - {hex_data}\n")
             print(f"{timestamp} - {hex_data}")
+            print(f"Packet type: {payload[0]} (int), 0x{payload[0]:02X} (hex)")
             print(parse_packet(payload))
+            print()
 
 print(f"Sniffing UDP packets from {TARGET_IP}:{TARGET_PORT}...")
 sniff(filter=f"udp and port {TARGET_PORT}", prn=handle_packet, store=0)
