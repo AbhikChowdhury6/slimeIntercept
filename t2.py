@@ -35,11 +35,12 @@ packet_parsers = {
 }
 
 def parse_packet(payload):
-    if len(payload) == 0:
-        return "Empty packet"
-    
-    packet_id = payload[:4]
-    return f"Packet ID: 0x{packet_id:02X} ({packet_id}) | Length: {len(payload)}"
+    if len(payload) < 4:
+        return "Payload too short"
+
+    # Unpack first 4 bytes as little-endian unsigned int
+    packet_id = struct.unpack("<I", payload[:4])[0]
+    return f"Packet ID: {packet_id} (0x{packet_id:08X})"
 
 def handle_packet(packet):
     if IP in packet and UDP in packet:
@@ -52,7 +53,6 @@ def handle_packet(packet):
             with open(LOG_FILE, "a") as f:
                 f.write(f"{timestamp} - {hex_data}\n")
             print(f"{timestamp} - {hex_data}")
-            print(f"Packet type: {payload[:4]} (int), 0x{payload[:4]:02X} (hex)")
             print(parse_packet(payload))
             print()
 
