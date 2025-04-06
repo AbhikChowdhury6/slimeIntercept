@@ -39,7 +39,7 @@ def parse_packet(payload):
         return "Payload too short"
 
     # Unpack first 4 bytes as little-endian unsigned int
-    packet_id = struct.unpack("<I", payload[:4])[0]
+    packet_id = struct.unpack(">I", payload[:4])[0]
     return f"Packet ID: {packet_id} (0x{packet_id:08X})"
 
 def handle_packet(packet):
