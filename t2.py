@@ -78,6 +78,7 @@ def parse_packet(payload):
                 continue
             fstrings.append(k + ":")
             fstrings.append(s)
+            
         
         return " ".join(fstrings)
     
@@ -95,8 +96,8 @@ def handle_packet(packet):
             with open(LOG_FILE, "a") as f:
                 f.write(f"{timestamp} - {hex_data}\n")
             #print(f"{timestamp} - {hex_data}")
-            print(parse_packet(payload))
-            print()
+            parse_packet(payload)
+            #print()
 
 print(f"Sniffing UDP packets from {TARGET_IPs}:{TARGET_PORT}...")
 sniff(filter=f"udp and port {TARGET_PORT}", prn=handle_packet, store=0)
