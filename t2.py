@@ -68,6 +68,7 @@ def parse_packet(payload):
     # Unpack first 4 bytes as little-endian unsigned int
     packet_id = struct.unpack(">I", payload[:4])[0]
     if packet_id == 100:
+        t = payload
         fstrings = []
 
         for k in bp:
@@ -75,7 +76,9 @@ def parse_packet(payload):
             func = globals()[bp[k][0]]
             fstrings.append(func(t[bp[k][1]:bp[k][2]], bp[k][3]))
         
-    return " ".join(fstrings)
+        return " ".join(fstrings)
+    
+    return payload.hex()
 
 def handle_packet(packet):
     if IP in packet and UDP in packet:
