@@ -34,7 +34,7 @@ def check_bytes(bytes, expected_val):
     if isExp:
         return str(isExp)
     else:
-        return str(isExp) + ": " + hex_val
+        return str(isExp) + ": " + str(hex_val)
 
 
 def check_uint8(byte, expected_val):
@@ -78,7 +78,7 @@ def parse_packet(payload):
         
         return " ".join(fstrings)
     
-    return payload.hex()
+    return str(payload.hex())
 
 def handle_packet(packet):
     if IP in packet and UDP in packet:
