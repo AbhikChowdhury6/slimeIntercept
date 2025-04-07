@@ -6,33 +6,60 @@ TARGET_IP = "192.168.1.96"
 TARGET_PORT = 6969
 LOG_FILE = "imu_raw_sniffed.txt"
 
-from collections import namedtuple
 
-Accel = namedtuple("Accel", "sensor_id x y z")
 
-def parse_packet4(data: bytes):
-    if len(data) < 13:
-        raise ValueError("Accel packet too short")
-    x, y, z = struct.unpack(">fff", data[0:12])  # Big endian floats
-    sensor_id = data[12]
-    return Accel(sensor_id, x, y, z)
-
-Rotation = namedtuple("Rotation", "sensor_id data_type x y z w accuracy")
-
-def parse_packet17(data: bytes):
-    if len(data) < 18:
-        raise ValueError("RotationDataPacket too short")
-    sensor_id = data[0]
-    data_type = data[1]
-    x, y, z, w = struct.unpack(">ffff", data[2:18 - 1])  # 4 big-endian floats
-    accuracy = data[17]
-    return Rotation(sensor_id, data_type, x, y, z, w, accuracy)
-
-packet_parsers = {
-    4: parse_packet4,
-    17: parse_packet17,
-    # Add more here...
+bp = {
+    'always_000000?': ('check_bytes',0,3, '000000'),
+    'packet_type': ('check_uint8',3,4, 100),
+    'always_all_0?': ('check_bytes',4,8, '00000000'),
+    'potential_counter': ('check_uint32',8,12, None),
+    'always_0_23_0_0_0?': ('check_bytes',12,17,'0017000000'),
+    'quat_packet_sig': ('check_uint8',17,18,17),
+    'unknown3_always_0001?': ('check_bytes',18,20, '0001'),
+    'quat_w': ('check_f32',20,24, None),
+    'quat_x': ('check_f32',24,28, None),
+    'quat_y': ('check_f32',28,32, None),
+    'quat_z': ('check_f32',32,36, None),
+    'always_3_0_17_0_0_0?': ('check_bytes',36,42,'030011000000'),
+    'accel_packet_sig': ('check_uint8',42,43,4),
+    'accel_x': ('check_f32',43,47, None),
+    'accel_y': ('check_f32',47,51, None),
+    'accel_z': ('check_f32',51,55, None),
 }
+
+
+def check_bytes(bytes, expected_val):
+    hex_val = bytes
+    isExp = hex_val == expected_val
+    if isExp:
+        return str(isExp)
+    else:
+        return str(isExp) + ": " + hex_val
+
+
+def check_uint8(byte, expected_val):
+    val = struct.unpack('>I',b'\x00\x00\x00' + byte)[0]
+    isExp = val == expected_val
+    if isExp:
+        return str(isExp)
+    else:
+        return str(isExp) + ": " + f"{val:03d}"
+
+def check_uint32(bytes, expected_val):
+    val = struct.unpack('>I',bytes)[0]
+    isExp = val == expected_val
+    if isExp:
+        return str(isExp)
+    else:
+        return str(isExp) + ": " + f"{val:08d}"
+
+def check_f32(bytes, expected_val):
+    val = struct.unpack('>f',bytes)[0]
+    isExp = val == expected_val
+    if isExp:
+        return str(isExp)
+    else:
+        return str(isExp) + ": " + f"{val:08.3f}"
 
 def parse_packet(payload):
     if len(payload) < 4:
@@ -40,7 +67,15 @@ def parse_packet(payload):
 
     # Unpack first 4 bytes as little-endian unsigned int
     packet_id = struct.unpack(">I", payload[:4])[0]
-    return f"Packet ID: {packet_id} (0x{packet_id:08X})"
+    if packet_id == 100:
+        fstrings = []
+
+        for k in bp:
+            fstrings.append(k + ":")
+            func = globals()[bp[k][0]]
+            fstrings.append(func(t[bp[k][1]:bp[k][2]], bp[k][3]))
+        
+    return " ".join(fstrings)
 
 def handle_packet(packet):
     if IP in packet and UDP in packet:
@@ -52,7 +87,7 @@ def handle_packet(packet):
             hex_data = payload.hex()
             with open(LOG_FILE, "a") as f:
                 f.write(f"{timestamp} - {hex_data}\n")
-            print(f"{timestamp} - {hex_data}")
+            #print(f"{timestamp} - {hex_data}")
             print(parse_packet(payload))
             print()
 
