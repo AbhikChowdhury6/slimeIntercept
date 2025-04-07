@@ -98,5 +98,5 @@ def handle_packet(packet):
             print(parse_packet(payload))
             print()
 
-print(f"Sniffing UDP packets from {TARGET_IP}:{TARGET_PORT}...")
+print(f"Sniffing UDP packets from {TARGET_IPs}:{TARGET_PORT}...")
 sniff(filter=f"udp and port {TARGET_PORT}", prn=handle_packet, store=0)
