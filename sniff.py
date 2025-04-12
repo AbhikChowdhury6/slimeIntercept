@@ -23,7 +23,7 @@ def make_packet_handler(TARGET_IPs, ts_buffer, accel_buffer, quat_buffer):
             return
         
         payload = bytes(packet[UDP].payload)
-        packet_type = get_uint8(payload[3,4])
+        packet_type = get_uint8(payload[3:4])
         if packet_type != 100:
             return
         

@@ -1,7 +1,8 @@
 from scapy.all import sniff, UDP, IP
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
-
+import time
+import select
 import struct
 
 import torch
@@ -53,7 +54,7 @@ bno085_sd = {
 
 #make a separate sniff prcess that writes to a shared buffer for slime to read
 class slime:
-    def __init__(self, bus, descriptor, debug_lvl, exit_signal=None):
+    def __init__(self, descriptor, debug_lvl, exit_signal=None):
 
         IPS = {'192.168.1.96': (0,'test-loc1'), '192.168.1.117': (1,'test-loc2')}
 
@@ -130,11 +131,27 @@ class slime:
 #alright now all that's left before testing is to init a slime 
 #add their sensors to a list
 # and check call read data with the right cadence
+exit_signal = torch.zeros(1, dtype=torch.int32).share_memory_()
+sl = slime(bno085_sd, 1, exit_signal)
+sensors = sl.sensors
+
+delay_micros = 1_000_000/64
+
+while True:
+    for sensor in sensors:
+        sensor.read_data()
 
 
+    if select.select([sys.stdin], [], [], 0)[0]:
+        if sys.stdin.read(1) == 'q':
+            print("got q going to start exiting")
+            exit_signal[0] = 1
+            break
 
 
-
+    micros_to_delay = delay_micros - (datetime.now().microsecond % delay_micros)
+    time.sleep(micros_to_delay/1_000_000)
+print('exiting')
 
 
 
