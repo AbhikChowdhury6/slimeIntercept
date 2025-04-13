@@ -56,7 +56,7 @@ bno085_sd = {
 class slime:
     def __init__(self, descriptor, debug_lvl, exit_signal=None):
 
-        IPS = {'192.168.1.96': (0,'test-loc1'), '192.168.1.117': (1,'test-loc2')}
+        IPS = {'192.168.1.10': (0,'right-upper-arm'), '192.168.1.19': (1,'left-upper-arm')}
 
         self.ts_buffer = torch.zeros((len(IPS), 1), dtype=torch.int64).share_memory_()
         self.accel_buffer = torch.zeros((len(IPS), 3), dtype=torch.float32).share_memory_()
