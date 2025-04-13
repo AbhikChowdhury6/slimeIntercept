@@ -102,17 +102,19 @@ class slime:
             desc = sd.split('-')[-1][:3]
             ipidx = sensor_descriptors[sd]['buff_idx']
             print(desc)
-            print(desc == 'ms2')
-            print (desc == 'qua')
+            #print(desc == 'ms2')
+            #print (desc == 'qua')
             if desc == 'ms2':
                 retrieve_datas[sd] = lambda ipidx=ipidx: self.accel_buffer[ipidx]
-            if desc == 'qua':
+            elif desc == 'qua':
                 retrieve_datas[sd] = lambda ipidx=ipidx: self.quat_buffer[ipidx]
-            print("don't recognize the data type")
+            else: 
+                print("don't recognize the data type")
 
         is_readies = {}
         for sd in sensor_descriptors:
             ipidx = sensor_descriptors[sd]['buff_idx']
+            print(ipidx)
             def is_ready(ipidx=ipidx):
                 #check if it's fresh
                 cap_ts =  datetime.fromtimestamp(self.ts_buffer[ipidx] / 1e9, tz=timezone.utc)
