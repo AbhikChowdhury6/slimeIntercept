@@ -101,7 +101,7 @@ class slime:
         for sd in sensor_descriptors:
             desc = sd.split('-')[-1][:3]
             ipidx = sensor_descriptors[sd]['buff_idx']
-            print(desc)
+            #print(desc)
             #print(desc == 'ms2')
             #print (desc == 'qua')
             if desc == 'ms2':
@@ -114,10 +114,10 @@ class slime:
         is_readies = {}
         for sd in sensor_descriptors:
             ipidx = sensor_descriptors[sd]['buff_idx']
-            print(ipidx)
+            #print(ipidx)
             def is_ready(ipidx=ipidx):
                 #check if it's fresh
-                print(ipidx)
+                #print(ipidx)
                 cap_ts =  datetime.fromtimestamp(int(self.ts_buffer[ipidx]) / 1e9, tz=timezone.utc)
                 return datetime.now().astimezone(ZoneInfo("UTC")) < cap_ts + timedelta(seconds=1/64)
             is_readies[sd] = is_ready

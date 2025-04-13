@@ -51,7 +51,7 @@ class Sensor:
         self.is_ready = is_ready
         self.retrieve_data = retrieve_data
         while not self.is_ready():
-            print("Waiting for data...")
+            #print("Waiting for data...")
             time.sleep(self.delay_micros/1_000_000)
         _ = self.retrieve_data() # a warmup reading
     
