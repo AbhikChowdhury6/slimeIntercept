@@ -87,6 +87,7 @@ class Sensor:
             if not self.is_ready():
                 return
             
+            print('reading data!')
             #round ts
             if self.hz <= 1:
                 now = now.replace(microsecond=0)
