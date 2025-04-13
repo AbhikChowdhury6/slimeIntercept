@@ -2,7 +2,7 @@ from scapy.all import sniff, UDP, IP
 import datetime
 import struct
 
-TARGET_IPs = ["192.168.1.96", "192.168.1.117"]
+TARGET_IPs = ["192.168.1.10", "192.168.1.117"]
 TARGET_PORT = 6969
 LOG_FILE = "imu_raw_sniffed.txt"
 
@@ -95,7 +95,7 @@ def handle_packet(packet):
             hex_data = payload.hex()
             with open(LOG_FILE, "a") as f:
                 f.write(f"{timestamp} - {hex_data}\n")
-            #print(f"{timestamp} - {hex_data}")
+            print(f"{timestamp} - {hex_data}")
             parse_packet(payload)
             #print()
 

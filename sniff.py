@@ -1,7 +1,7 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import struct
-
+import sys
 from scapy.all import sniff, UDP, IP
 
 TARGET_PORT = 6969
@@ -33,6 +33,7 @@ def make_packet_handler(TARGET_IPs, ts_buffer, accel_buffer, quat_buffer):
         ts = datetime.now().astimezone(ZoneInfo("UTC"))
         ts_buffer[buff_idx] = int(ts.timestamp() * 1e9)
         print(f"got packet at: {ts} from {src_ip}")
+        sys.stdout.flush()
 
         quatw = get_f32(payload[20:24])
         quatx = get_f32(payload[24:28])
