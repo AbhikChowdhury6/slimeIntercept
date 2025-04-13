@@ -99,11 +99,14 @@ class slime:
         # now each of the keys in sensor descriptors make a retirve data function
         retrieve_datas = {}
         for sd in sensor_descriptors:
-            print(sd.split('-')[-1][0])
+            desc = sd.split('-')[-1][:3]
             ipidx = sensor_descriptors[sd]['buff_idx']
-            if sd.split('-')[-1][:3] == 'ms2':
+            print(desc)
+            print(desc == 'ms2')
+            print (desc == 'qua')
+            if desc == 'ms2':
                 retrieve_datas[sd] = lambda ipidx=ipidx: self.accel_buffer[ipidx]
-            if sd.split('-')[-1][:4] == 'quat':
+            if desc == 'qua':
                 retrieve_datas[sd] = lambda ipidx=ipidx: self.quat_buffer[ipidx]
             print("don't recognize the data type")
 
