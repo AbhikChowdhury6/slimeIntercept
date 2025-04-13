@@ -55,6 +55,7 @@ bno085_sd = {
 #make a separate sniff prcess that writes to a shared buffer for slime to read
 class slime:
     def __init__(self, descriptor, debug_lvl, exit_signal=None):
+        print(descriptor)
 
         IPS = {'192.168.1.10': (0,'right-upper-arm'), '192.168.1.19': (1,'left-upper-arm')}
 
@@ -132,7 +133,7 @@ class slime:
 #add their sensors to a list
 # and check call read data with the right cadence
 exit_signal = torch.zeros(1, dtype=torch.int32).share_memory_()
-sl = slime(bno085_sd, 1, exit_signal)
+sl = slime(bno085_sd['abno085'], 1, exit_signal)
 sensors = sl.sensors
 
 delay_micros = 1_000_000/64
