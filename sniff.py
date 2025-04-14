@@ -3,6 +3,7 @@ from zoneinfo import ZoneInfo
 import struct
 import sys
 from scapy.all import sniff, UDP, IP
+import torch
 
 TARGET_PORT = 6969
 
@@ -39,7 +40,7 @@ def make_packet_handler(TARGET_IPs, ts_buffer, accel_buffer, quat_buffer):
         
 
         ts = datetime.now().astimezone(ZoneInfo("UTC"))
-        ts_buffer[buff_idx] = int(ts.timestamp() * 1e9)
+        ts_buffer[buff_idx] = torch.tensor(int(ts.timestamp() * 1e9))
         print(f"got packet at: {ts} from {src_ip}")
         sys.stdout.flush()
 
@@ -47,12 +48,12 @@ def make_packet_handler(TARGET_IPs, ts_buffer, accel_buffer, quat_buffer):
         quatx = get_f32(payload[24:28])
         quaty = get_f32(payload[28:32])
         quatz = get_f32(payload[32:36])
-        quat_buffer[buff_idx] = [quatw, quatx, quaty, quatz]
+        quat_buffer[buff_idx] = torch.tensor([quatw, quatx, quaty, quatz])
 
         accelx = get_f32(payload[43:47])
         accely = get_f32(payload[47:51])
         accelz = get_f32(payload[51:55])
-        accel_buffer[buff_idx] = [accelx, accely, accelz]
+        accel_buffer[buff_idx] = torch.tensor([accelx, accely, accelz])
     
     return handle_packet
 
