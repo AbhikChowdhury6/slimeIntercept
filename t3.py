@@ -88,6 +88,7 @@ class slime:
                 for cn in base_sds[sd]['col_names']:
                     if cn.split('!')[0] == 'sampleDT':
                         new_col_names.append(cn)
+                        continue
                     new_col_names.append(IPS[ip][1] + '-' + cn)
                 
                 sensor_descriptors[new_data_type] = base_sds[sd]
@@ -95,7 +96,7 @@ class slime:
                 #add a new field for this sensor
                 sensor_descriptors[new_data_type]['buff_idx'] = IPS[ip][0]
         
-        print(sensor_descriptors)
+        ic(sensor_descriptors)
 
 
         # now each of the keys in sensor descriptors make a retirve data function
