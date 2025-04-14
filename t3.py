@@ -117,12 +117,12 @@ class slime:
             def is_ready(ipidx=ipidx):
                 #check if it's fresh
                 #print(ipidx)
-                fresh_ts =  datetime.fromtimestamp(int(self.ts_buffer[ipidx]) / 1e9, tz=timezone.utc) \
+                fts =  datetime.fromtimestamp(int(self.ts_buffer[ipidx]) / 1e9, tz=timezone.utc) \
                             + timedelta(seconds=1/128)
                 now = datetime.now().astimezone(ZoneInfo("UTC"))
-                ic(fresh_ts, now)
+                ic(ipidx, fts, now)
                 sys.stdout.flush()
-                return now < fresh_ts
+                return now < fts
             is_readies[sd] = is_ready
 
 
