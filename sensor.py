@@ -29,7 +29,7 @@ class Sensor:
         self.delay_nanos = int(1_000_000_000/self.hz)
         self.config = config
         self.num_data_col = len(config['col_names']) -1
-        ic(self.num_data_col)
+        ic(config['col_names'], len(config['col_names']), self.num_data_col)
         self.torch_dtype = getattr(torch, config['col_names'][1].split('!')[1])
         self.pandas_dtype = config['col_names'][1].split('!')[2]
         self.abc1_dtype = config['col_names'][1].split('!')[3] # codec I'm working on
@@ -39,7 +39,7 @@ class Sensor:
         self.debug_lvl = debug_lvl
 
         #print(self.hz, self.dtype)
-        #sys.stdout.flush()
+        sys.stdout.flush()
         buff_len = self.hz if self.hz > 1 else 1
         self.buffer = CircularTimeSeriesBuffers(buff_len, self.torch_dtype, self.num_data_col)
 
