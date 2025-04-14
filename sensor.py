@@ -26,7 +26,7 @@ class Sensor:
         sys.stdout.flush()
         self.dd = dd
         self.hz = config['hz']
-        self.delay_micros = int(1_000_000/self.hz)
+        self.delay_nanos = int(1_000_000_000/self.hz)
         self.config = config
         self.torch_dtype = getattr(torch, config['col_names'][1].split('!')[1])
         self.pandas_dtype = config['col_names'][1].split('!')[2]
@@ -52,7 +52,9 @@ class Sensor:
         self.retrieve_data = retrieve_data
         while not self.is_ready():
             #print("Waiting for data...")
-            time.sleep(self.delay_micros/1_000_000)
+            time.sleep(self.delay_nanos/1_000_000)
+        print('got a reading!')
+        sys.stdout.flush()
         _ = self.retrieve_data() # a warmup reading
     
     def _round_data(self, new_data):
@@ -76,13 +78,13 @@ class Sensor:
         now = datetime.now().astimezone(ZoneInfo("UTC"))
 
         # wait till the rounded hz seconds 
-        if self.hz < 1 and int(secs_since_midnight(now)) % int(self.delay_micros/1_000_000) != 0:
+        if self.hz < 1 and int(secs_since_midnight(now)) % int(self.delay_nanos/1_000_000) != 0:
             return
 
         if now >= self.retrive_after:
             #wait till the next timestep
-            dm = self.delay_micros - (now.microsecond % self.delay_micros)
-            self.retrive_after = now + timedelta(microseconds=dm)
+            dn = self.delay_nanos - (now.microsecond % self.delay_nanos)
+            self.retrive_after = now + timedelta(microseconds=int(dn/1000))
 
             if not self.is_ready():
                 return
@@ -92,8 +94,8 @@ class Sensor:
             if self.hz <= 1:
                 now = now.replace(microsecond=0)
             else:
-                rounded_down_micros = (now.microsecond//self.delay_micros) * self.delay_micros
-                now = now.replace(microsecond=int(rounded_down_micros))
+                rounded_down_nanos = (now.microsecond//self.delay_nanos) * self.delay_nanos
+                now = now.replace(microsecond=int(rounded_down_nanos/1000))
 
             new_data = self.retrieve_data()
 

@@ -33,15 +33,15 @@ bno085_sd = {
         'deviceName': "slime-bno085",
         'sensors': {
             'linaccel-ms2': {
-                'hz': 2**8,
-                'col_names': ['sampleDT!int64!datetime64[ns]!audelayhz8',
+                'hz': 2**7,
+                'col_names': ['sampleDT!int64!datetime64[ns]!audelayhz7',
                               'linaccelx-ms2!float32!float32!afloat10',
                               'linaccely-ms2!float32!float32!afloat10',
                               'linaccelz-ms2!float32!float32!afloat10']
             },
             'quat': {
-                'hz': 2**8,
-                'col_names': ['sampleDT!int64!datetime64[ns]!audelayhz8', 
+                'hz': 2**7,
+                'col_names': ['sampleDT!int64!datetime64[ns]!audelayhz7', 
                               'quatw!float32!float32!aboundedfloat11',
                               'quatx!float32!float32!aboundedfloat11',
                               'quaty!float32!float32!aboundedfloat11',
@@ -103,9 +103,6 @@ class slime:
         for sd in sensor_descriptors:
             desc = sd.split('-')[-1][:3]
             ipidx = sensor_descriptors[sd]['buff_idx']
-            #print(desc)
-            #print(desc == 'ms2')
-            #print (desc == 'qua')
             if desc == 'ms2':
                 retrieve_datas[sd] = lambda ipidx=ipidx: self.accel_buffer[ipidx]
             elif desc == 'qua':
@@ -122,7 +119,7 @@ class slime:
                 #print(ipidx)
                 cap_ts =  datetime.fromtimestamp(int(self.ts_buffer[ipidx]) / 1e9, tz=timezone.utc)
                 #ic(cap_ts)
-                return datetime.now().astimezone(ZoneInfo("UTC")) < cap_ts + timedelta(seconds=1/64)
+                return datetime.now().astimezone(ZoneInfo("UTC")) < cap_ts + timedelta(seconds=1/128)
             is_readies[sd] = is_ready
 
 
@@ -146,7 +143,7 @@ exit_signal = torch.zeros(1, dtype=torch.int32).share_memory_()
 sl = slime(bno085_sd['abno085'], 1, exit_signal)
 sensors = sl.sensors
 
-delay_micros = 1_000_000/64
+delay_nanos = int(1_000_000_000/128)
 
 while True:
     for sensor in sensors:
@@ -160,8 +157,8 @@ while True:
             break
 
 
-    micros_to_delay = delay_micros - (datetime.now().microsecond % delay_micros)
-    time.sleep(micros_to_delay/1_000_000)
+    nanos_to_delay = delay_nanos - (datetime.now().microsecond % delay_nanos)
+    time.sleep(delay_nanos/1_000_000_000)
 print('exiting')
 
 

@@ -32,9 +32,6 @@ def make_packet_handler(TARGET_IPs, ts_buffer, accel_buffer, quat_buffer):
         packet_type = get_uint8(payload[3:4])
         if packet_type != 100:
             return
-        
-        print('correct packet type')
-        sys.stdout.flush()
 
         buff_idx = TARGET_IPs[src_ip][0]
         
