@@ -113,7 +113,7 @@ class Sensor:
             # honestly let's just handle up to 9 bits of rounding for now and that should even cover our quats ok
             npd = np.array(new_data)
             npd = np.vectorize(self._round_data)(npd)
-            ic(npd)
+            ic(now, npd)
 
             self.buffer.append(npd, now)
         
