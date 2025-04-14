@@ -118,8 +118,9 @@ class slime:
                 #check if it's fresh
                 #print(ipidx)
                 cap_ts =  datetime.fromtimestamp(int(self.ts_buffer[ipidx]) / 1e9, tz=timezone.utc)
-                #ic(cap_ts)
-                return datetime.now().astimezone(ZoneInfo("UTC")) < cap_ts + timedelta(seconds=1/128)
+                now = datetime.now().astimezone(ZoneInfo("UTC"))
+                ic(cap_ts, now)
+                return now < cap_ts + timedelta(seconds=1/128)
             is_readies[sd] = is_ready
 
 
