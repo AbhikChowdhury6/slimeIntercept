@@ -15,6 +15,7 @@ sys.path.append(repoPath + "slimeIntercept/")
 from sensor import Sensor
 from sniff import SNIFFER
 
+from icecream import ic
 # so what do I want to do here
 # i'd like to have a reference for the ip's
 # add the ip's I want to the capture, with the mounting location
@@ -119,6 +120,7 @@ class slime:
                 #check if it's fresh
                 #print(ipidx)
                 cap_ts =  datetime.fromtimestamp(int(self.ts_buffer[ipidx]) / 1e9, tz=timezone.utc)
+                ic(cap_ts)
                 return datetime.now().astimezone(ZoneInfo("UTC")) < cap_ts + timedelta(seconds=1/64)
             is_readies[sd] = is_ready
 
