@@ -120,6 +120,7 @@ class slime:
                 cap_ts =  datetime.fromtimestamp(int(self.ts_buffer[ipidx]) / 1e9, tz=timezone.utc)
                 now = datetime.now().astimezone(ZoneInfo("UTC"))
                 ic(cap_ts, now)
+                sys.stdout.flush()
                 return now < cap_ts + timedelta(seconds=1/128)
             is_readies[sd] = is_ready
 

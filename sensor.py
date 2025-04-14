@@ -52,7 +52,7 @@ class Sensor:
         self.retrieve_data = retrieve_data
         while not self.is_ready():
             #print("Waiting for data...")
-            time.sleep(self.delay_nanos/1_000_000)
+            time.sleep(self.delay_nanos/1_000_000_000)
         print('got a reading!')
         sys.stdout.flush()
         _ = self.retrieve_data() # a warmup reading
@@ -78,7 +78,7 @@ class Sensor:
         now = datetime.now().astimezone(ZoneInfo("UTC"))
 
         # wait till the rounded hz seconds 
-        if self.hz < 1 and int(secs_since_midnight(now)) % int(self.delay_nanos/1_000_000) != 0:
+        if self.hz < 1 and int(secs_since_midnight(now)) % int(self.delay_nanos/1_000_000_000) != 0:
             return
 
         if now >= self.retrive_after:
