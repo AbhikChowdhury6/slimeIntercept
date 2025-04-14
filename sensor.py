@@ -28,6 +28,7 @@ class Sensor:
         self.hz = config['hz']
         self.delay_nanos = int(1_000_000_000/self.hz)
         self.config = config
+        self.num_data_col = len(config['col_names']) -1
         self.torch_dtype = getattr(torch, config['col_names'][1].split('!')[1])
         self.pandas_dtype = config['col_names'][1].split('!')[2]
         self.abc1_dtype = config['col_names'][1].split('!')[3] # codec I'm working on
@@ -39,7 +40,7 @@ class Sensor:
         #print(self.hz, self.dtype)
         #sys.stdout.flush()
         buff_len = self.hz if self.hz > 1 else 1
-        self.buffer = CircularTimeSeriesBuffers(buff_len, self.torch_dtype)
+        self.buffer = CircularTimeSeriesBuffers(buff_len, self.torch_dtype, self.num_data_col)
 
         self.write_exit_signal = torch.zeros(1, dtype=torch.int32).share_memory_()
         writeArgs = [self.buffer, self.dd, self.config['col_names'], self.debug_lvl, self.write_exit_signal]
