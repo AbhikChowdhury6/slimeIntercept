@@ -14,8 +14,8 @@ def get_uint8(byte):
 
 def make_packet_handler(TARGET_IPs, ts_buffer, accel_buffer, quat_buffer):
     def handle_packet(packet):
-        print('in handle packet')
-        sys.stdout.flush()
+        #print('in handle packet')
+        #sys.stdout.flush()
         if IP not in packet or UDP not in packet:
             return
         
@@ -23,9 +23,9 @@ def make_packet_handler(TARGET_IPs, ts_buffer, accel_buffer, quat_buffer):
         dst_port = packet[UDP].dport
         if src_ip not in TARGET_IPs or dst_port != TARGET_PORT:
             return
-        print('correct ip')
-        print(packet.hex())
-        sys.stdout.flush()
+        #print('correct ip')
+        #print(bytes(packet[UDP].payload).hex())
+        #sys.stdout.flush()
 
         payload = bytes(packet[UDP].payload)
         packet_type = get_uint8(payload[3:4])
