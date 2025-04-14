@@ -85,7 +85,7 @@ class Sensor:
 
         if now >= self.retrive_after:
             #wait till the next timestep
-            dn = self.delay_nanos - (now.microsecond % self.delay_nanos)
+            dn = self.delay_nanos - (now.microsecond*1_000 % self.delay_nanos)
             self.retrive_after = now + timedelta(microseconds=int(dn/1000))
 
             if not self.is_ready():
@@ -96,7 +96,7 @@ class Sensor:
             if self.hz <= 1:
                 now = now.replace(microsecond=0)
             else:
-                rounded_down_nanos = (now.microsecond//self.delay_nanos) * self.delay_nanos
+                rounded_down_nanos = (now.microsecond*1_000//self.delay_nanos) * self.delay_nanos
                 now = now.replace(microsecond=int(rounded_down_nanos/1000))
 
             new_data = self.retrieve_data()
