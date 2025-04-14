@@ -71,6 +71,7 @@ class slime:
                                                               self.quat_buffer,
                                                               debug_lvl, 
                                                               exit_signal))
+        self.sniff_process.start()
 
         # the name of the ips would actually be appended to the data type and not the instance
         # so we would generate the retrieve datas dict and the sensor descriptors based on IPS
@@ -120,7 +121,7 @@ class slime:
                 #check if it's fresh
                 #print(ipidx)
                 cap_ts =  datetime.fromtimestamp(int(self.ts_buffer[ipidx]) / 1e9, tz=timezone.utc)
-                ic(cap_ts)
+                #ic(cap_ts)
                 return datetime.now().astimezone(ZoneInfo("UTC")) < cap_ts + timedelta(seconds=1/64)
             is_readies[sd] = is_ready
 
