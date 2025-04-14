@@ -63,6 +63,8 @@ class CircularTimeSeriesBuffers:
             self.nextidxs[self.lastbn[0]][0] = 0
             self.lengths[self.bn[0]][0] = 0
         
+        print('value ', value)
+        print('ts ', timestamp)
         self[self.nextidxs[self.bn[0]][0]] = (value, timestamp)  # Use __setitem__
         
         #print(f"self.nextidx before incrementing {self.nextidx[0]}")
