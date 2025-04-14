@@ -29,6 +29,7 @@ class Sensor:
         self.delay_nanos = int(1_000_000_000/self.hz)
         self.config = config
         self.num_data_col = len(config['col_names']) -1
+        ic(self.num_data_col)
         self.torch_dtype = getattr(torch, config['col_names'][1].split('!')[1])
         self.pandas_dtype = config['col_names'][1].split('!')[2]
         self.abc1_dtype = config['col_names'][1].split('!')[3] # codec I'm working on

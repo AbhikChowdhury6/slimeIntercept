@@ -27,7 +27,9 @@ class CircularTimeSeriesBuffers:
         # Shared memory buffers
         self.nextidxs = torch.zeros((numBuffs,1), dtype=torch.int32).share_memory_()  # Most recent index (insertion point)
         self.lengths = torch.zeros((numBuffs,1), dtype=torch.int32).share_memory_()
+        print(length)
         self.data_buffers = torch.zeros((numBuffs, hz, length), dtype=DTYPE).share_memory_()
+        print(self.data_buffers.shape)
         self.time_buffers = torch.zeros((numBuffs, self.size[0]), dtype=torch.int64).share_memory_()
         #print("initialized")
         #sys.stdout.flush()
