@@ -10,6 +10,8 @@ from circularTimeSeriesBuffer import CircularTimeSeriesBuffers
 
 def write_worker(ctsb: CircularTimeSeriesBuffers, deviceDescriptor, colNames,
                    debug_lvl, exitSignal):
+    print('in write worker!')
+    sys.stdout.flush()
     # all this should do is save the last second
     def intTensorToDtList(tensor):
         return [datetime.fromtimestamp(ts_ns.item() / 1e9, tz=timezone.utc) for ts_ns in tensor]
@@ -27,11 +29,16 @@ def write_worker(ctsb: CircularTimeSeriesBuffers, deviceDescriptor, colNames,
         #check if there's new data but right
 
         lastBuffNum = ((ctsb.bn[0] + (ctsb.numBuffs[0]-1)) % ctsb.numBuffs[0]).clone()
+        print('WW: ' + str(ctsb.lengths[lastBuffNum][0]))
+        sys.stdout.flush()
 
         if ctsb.lengths[lastBuffNum][0] == 0:
                 continue
         
         newTimestamps = intTensorToDtList(ctsb.time_buffers[lastBuffNum][:ctsb.lengths[lastBuffNum][0]])
+        
+        print('WW: ' + str(newTimestamps[-1]))
+        sys.stdout.flush()
         
         if newTimestamps[-1] <= last_update_time:
             continue
