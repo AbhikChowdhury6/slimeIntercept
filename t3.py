@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 import time
 import select
-import struct
+import copy
 
 import torch
 import torch.multiprocessing as mp
@@ -91,7 +91,7 @@ class slime:
                         continue
                     new_col_names.append(IPS[ip][1] + '-' + cn)
                 
-                sensor_descriptors[new_data_type] = base_sds[sd]
+                sensor_descriptors[new_data_type] = copy.deepcopy(base_sds[sd])
                 sensor_descriptors[new_data_type]['col_names'] = new_col_names
                 #add a new field for this sensor
                 sensor_descriptors[new_data_type]['buff_idx'] = IPS[ip][0]
@@ -121,7 +121,7 @@ class slime:
                 fts =  datetime.fromtimestamp(int(self.ts_buffer[ipidx]) / 1e9, tz=timezone.utc) \
                             + timedelta(seconds=1/128)
                 now = datetime.now().astimezone(ZoneInfo("UTC"))
-                ic(ipidx, fts, now)
+                ic(ipidx, fts - now)
                 sys.stdout.flush()
                 return now < fts
             is_readies[sd] = is_ready
