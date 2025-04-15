@@ -29,17 +29,17 @@ def write_worker(ctsb: CircularTimeSeriesBuffers, deviceDescriptor, colNames,
         #check if there's new data but right
 
         lastBuffNum = ((ctsb.bn[0] + (ctsb.numBuffs[0]-1)) % ctsb.numBuffs[0]).clone()
-        print('WW: ' + str(ctsb.lengths[lastBuffNum][0]))
-        sys.stdout.flush()
+        #print('WW: ' + str(ctsb.lengths[lastBuffNum][0]))
+        #sys.stdout.flush()
 
         if ctsb.lengths[lastBuffNum][0] == 0:
                 continue
         
         newTimestamps = intTensorToDtList(ctsb.time_buffers[lastBuffNum][:ctsb.lengths[lastBuffNum][0]])
         
-        print('WW: ' + str(newTimestamps[-1]))
-        sys.stdout.flush()
-        
+        #print('WW: ' + str(newTimestamps[-1]))
+        #sys.stdout.flush()
+
         if newTimestamps[-1] <= last_update_time:
             continue
         last_update_time = newTimestamps[-1] 

@@ -154,6 +154,7 @@ sensors = sl.sensors
 delay_nanos = int(1_000_000_000/128)
 
 while True:
+    st = datetime.now()
     for sensor in sensors:
         sensor.read_data()
 
@@ -164,8 +165,9 @@ while True:
             exit_signal[0] = 1
             break
 
-
-    nanos_to_delay = delay_nanos - (datetime.now().microsecond % delay_nanos)
+    if (datetime.now() - st).microsecond * 1000 >  delay_nanos:
+        print('loop skipped one ', (datetime.now() - st))
+    nanos_to_delay = delay_nanos - (datetime.now().microsecond * 1000 % delay_nanos)
     time.sleep(delay_nanos/1_000_000_000)
 print('exiting')
 
