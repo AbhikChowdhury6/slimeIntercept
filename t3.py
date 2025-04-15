@@ -58,7 +58,11 @@ class slime:
     def __init__(self, descriptor, debug_lvl, exit_signal=None):
         print(descriptor)
 
-        IPS = {'192.168.1.10': (0,'right-upper-arm'), '192.168.1.19': (1,'left-upper-arm')}
+        IPS = {'192.168.1.10': (0,'right-upper-arm'), 
+               '192.168.1.19': (1,'left-upper-arm'),
+               '192.168.1.36': (2,'right-thigh'),
+               '192.168.1.96': (3,'left-thigh'),
+               '192.168.1.117': (4,'chest')}
 
         self.ts_buffer = torch.zeros((len(IPS), 1), dtype=torch.int64).share_memory_()
         self.accel_buffer = torch.zeros((len(IPS), 3), dtype=torch.float32).share_memory_()
@@ -121,8 +125,8 @@ class slime:
                 fts =  datetime.fromtimestamp(int(self.ts_buffer[ipidx]) / 1e9, tz=timezone.utc) \
                             + timedelta(seconds=1/128)
                 now = datetime.now().astimezone(ZoneInfo("UTC"))
-                ic(ipidx, fts - now)
-                sys.stdout.flush()
+                #ic(ipidx, fts - now)
+                #sys.stdout.flush()
                 return now < fts
             is_readies[sd] = is_ready
 
