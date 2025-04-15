@@ -165,7 +165,7 @@ while True:
             exit_signal[0] = 1
             break
 
-    if (datetime.now() - st).microsecond * 1000 >  delay_nanos:
+    if (datetime.now() - st).microseconds * 1000 >  delay_nanos:
         print('loop skipped one ', (datetime.now() - st))
     nanos_to_delay = delay_nanos - (datetime.now().microsecond * 1000 % delay_nanos)
     time.sleep(delay_nanos/1_000_000_000)
