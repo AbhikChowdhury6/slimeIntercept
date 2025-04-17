@@ -139,7 +139,7 @@ class slime:
                 descriptor['deviceName'],
                 s,
                 'internal']
-            sen = Sensor(sensor_descriptors[s], retrieve_datas[s], is_readies[s], dd, debug_lvl)
+            sen = Sensor(sensor_descriptors[s], retrieve_datas[s], is_readies[s], dd, debug_lvl, exit_signal)
             self.sensors.append(sen)
 
 
@@ -162,6 +162,9 @@ while True:
     if select.select([sys.stdin], [], [], 0)[0]:
         if sys.stdin.read(1) == 'q':
             print("got q going to start exiting")
+            for sensor in sensors:
+                sensor.write_exit_signal[0] = 1
+            time.sleep(1)
             exit_signal[0] = 1
             break
 
